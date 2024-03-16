@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NotFlex.Infrastructure.Data;
 using NotFlex.ApplicationCore.Interfaces;
 using NotFlex.ApplicationCore.Services;
+using Microsoft.OpenApi.Models;
 
 namespace NotFlex
 {
@@ -35,16 +36,16 @@ namespace NotFlex
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-               options.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateIssuer = true,
-                   ValidateAudience = true,
-                   ValidateLifetime = true,
-                   ValidateIssuerSigningKey = true,
-                   ValidIssuer = "http://localhost:55653",
-                   ValidAudience = "http://localhost:55653",
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("KeyForSignInSecret@1234"))
-               };
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = "http://localhost:55653",
+                    ValidAudience = "http://localhost:55653",
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("KeyForSignInSecret@1234"))
+                };
             });
 
             services.AddControllers();
@@ -53,8 +54,13 @@ namespace NotFlex
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
-            
+
             services.AddScoped(typeof(ICategoryService), typeof(CategoryService));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "NotFlex Portal API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +86,13 @@ namespace NotFlex
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "NotFlex Portal API");
+                c.RoutePrefix = "swagger";
             });
         }
     }
