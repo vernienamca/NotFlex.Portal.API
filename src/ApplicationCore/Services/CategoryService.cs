@@ -28,6 +28,18 @@ namespace NotFlex.ApplicationCore.Services
             return await _repository.Add(category);
         }
 
+        public async Task<Category> Update(Category category)
+        {
+            return await _repository.Update(category);
+        }
+
+        public async Task Delete(byte id)
+        {
+            var category = await _repository.GetById(id);
+
+            await _repository.Delete(category);
+        }
+
         public IQueryable<Category> Get()
         {
             return _repository.Get();

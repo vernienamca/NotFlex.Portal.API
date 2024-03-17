@@ -16,6 +16,16 @@ namespace NotFlex.Infrastructure.Data
             return await AddAsync(category);
         }
 
+        public async Task<Category> Update(Category category)
+        {
+            return await UpdateAsync(category);
+        }
+
+        public async Task Delete(Category category)
+        {
+            await DeleteAsync(category);
+        }
+
         public IQueryable<Category> Get()
         {
             return _dbContext.Category;

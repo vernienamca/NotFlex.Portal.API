@@ -8,6 +8,8 @@ namespace NotFlex.ApplicationCore.Interfaces
     public interface ICategoryService
     {
         Task<Category> Add(CategoryDTO categoryDto);
+        Task<Category> Update(Category category);
+        Task Delete(byte id);
         IQueryable<Category> Get();
         Task<Category> GetById(byte id);
     }

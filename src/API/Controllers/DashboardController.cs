@@ -93,5 +93,45 @@ namespace NotFlex.API.Controllers
         }
 
         #endregion Post
+
+        #region Put
+
+        /// <summary>
+        /// Puts the update category.
+        /// </summary>
+        /// <param name="id">The category identifier.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">command</exception>
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> PutUpdateCategory(byte id, [FromBody] CategoryDTO categoryDto)
+        {
+            if (categoryDto == null)
+                throw new ArgumentNullException(nameof(categoryDto));
+
+            var category = await _categoryService.GetById(id);
+
+            category.Name = categoryDto.Name;
+            category.UpdatedBy = categoryDto.UpdatedBy;
+            category.DateUpdated = DateTime.Now;
+
+            return Ok(await _categoryService.Update(category));
+        }
+
+        #endregion Put
+
+        #region Delete
+
+        /// <summary>
+        /// Delete the category by identifier.
+        /// </summary>
+        /// <param name="id">The category identifier.</param>
+        /// <returns></returns>
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(byte id)
+        {
+            return Ok(_categoryService.Delete(id));
+        }
+
+        #endregion Delete
     }
 }
