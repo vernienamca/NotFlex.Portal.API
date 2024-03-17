@@ -6,7 +6,8 @@ namespace NotFlex.ApplicationCore.Interfaces
 {
     public interface ICategoryRepository
     {
+        Task<Category> Add(Category category);
         IQueryable<Category> Get();
-        Task<Category> GetById(int id);
+        Task<Category> GetById(byte id);
     }
 }

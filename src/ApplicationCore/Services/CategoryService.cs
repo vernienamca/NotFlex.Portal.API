@@ -1,5 +1,7 @@
-﻿using NotFlex.ApplicationCore.Entities.Structure;
+﻿using NotFlex.ApplicationCore.DTO;
+using NotFlex.ApplicationCore.Entities.Structure;
 using NotFlex.ApplicationCore.Interfaces;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,12 +16,24 @@ namespace NotFlex.ApplicationCore.Services
             _repository = repository;
         }
 
+        public async Task<Category> Add(CategoryDTO categoryDto)
+        {
+            var category = new Category()
+            {
+                Name = categoryDto.Name,
+                CreatedBy = categoryDto.CreatedBy,
+                DateCreated = DateTime.Now
+            };
+
+            return await _repository.Add(category);
+        }
+
         public IQueryable<Category> Get()
         {
             return _repository.Get();
         }
 
-        public async Task<Category> GetById(int id)
+        public async Task<Category> GetById(byte id)
         {
             return await _repository.GetById(id);
         }

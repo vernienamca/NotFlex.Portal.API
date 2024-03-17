@@ -54,8 +54,10 @@ namespace NotFlex
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+            services.AddScoped(typeof(IMovieRepository), typeof(MovieRepository));
 
             services.AddScoped(typeof(ICategoryService), typeof(CategoryService));
+            services.AddScoped(typeof(IMovieService), typeof(MovieService));
 
             services.AddSwaggerGen(c =>
             {
@@ -67,7 +69,7 @@ namespace NotFlex
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors(
-                options => options.WithOrigins("localhost:3000").AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()
+                options => options.WithOrigins("localhost:4200").AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()
             );
 
             if (env.IsDevelopment())

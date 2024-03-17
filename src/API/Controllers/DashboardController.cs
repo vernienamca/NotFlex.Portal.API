@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NotFlex.ApplicationCore.DTO;
 using NotFlex.ApplicationCore.Entities.Structure;
 using NotFlex.ApplicationCore.Interfaces;
+using NotFlex.ApplicationCore.Models;
 
 namespace NotFlex.API.Controllers
 {
@@ -13,7 +16,8 @@ namespace NotFlex.API.Controllers
     {
         #region Variables
 
-        private readonly ICategoryService _service;
+        private readonly ICategoryService _categoryService;
+        private readonly IMovieService _movieService;
 
         #endregion Variables
 
@@ -21,11 +25,14 @@ namespace NotFlex.API.Controllers
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DashboardController"/> class.
-        /// <param name="service">The category service.</param>
+        /// <param name="categoryService">The category service.</param>
+        /// <param name="movieService">The movie service.</param>
         /// </summary>
-        public DashboardController(ICategoryService service)
+        public DashboardController(ICategoryService categoryService
+            , IMovieService movieService)
         {
-            _service = service;
+            _categoryService = categoryService;
+            _movieService = movieService;
         }
 
         #endregion Constructor
@@ -33,14 +40,25 @@ namespace NotFlex.API.Controllers
         #region Get
 
         /// <summary>
+        /// List the movies.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("movies")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<MovieModel>), StatusCodes.Status200OK)]
+        public IEnumerable<MovieModel> GetMovies()
+        {
+            return _movieService.Get();
+        }
+
+        /// <summary>
         /// List the category.
         /// </summary>
         /// <returns></returns>
-        [HttpGet()]
+        [HttpGet("category")]
         [ProducesResponseType(typeof(IReadOnlyCollection<Category>), StatusCodes.Status200OK)]
-        public IEnumerable<Category> Get()
+        public IEnumerable<Category> GetCategory()
         {
-            return _service.Get();
+            return _categoryService.Get();
         }
 
         /// <summary>
@@ -52,9 +70,28 @@ namespace NotFlex.API.Controllers
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
         public async Task<Category> GetById([FromQuery] byte id)
         {
-            return await _service.GetById(id);
+            return await _categoryService.GetById(id);
         }
 
-        #endregion
+        #endregion Get
+
+        #region Post
+
+        /// <summary>
+        /// Posts the create category.
+        /// </summary>
+        /// <param name="categoryDto">The category data object.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">command</exception>
+        [HttpPost]
+        public async Task<ActionResult> PostCreateCategory([FromBody] CategoryDTO categoryDto)
+        {
+            if (categoryDto == null)
+                throw new ArgumentNullException(nameof(categoryDto));
+
+            return Ok(await _categoryService.Add(categoryDto));
+        }
+
+        #endregion Post
     }
 }
